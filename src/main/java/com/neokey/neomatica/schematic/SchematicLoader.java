@@ -7,6 +7,7 @@ import com.neokey.neomatica.util.NBTUtil;
 
 import net.minecraft.nbt.NbtCompound;
 import net.minecraft.nbt.NbtIo;
+import net.minecraft.nbt.NbtSizeTracker;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3i;
 
@@ -49,22 +50,22 @@ public class SchematicLoader {
         try (FileInputStream fis = new FileInputStream(file);
              GZIPInputStream gzip = new GZIPInputStream(fis)) {
             
-            NbtCompound nbt = NbtIo.readCompressed(fis);
+            NbtCompound nbt = NbtIo.readCompressed(fis, NbtSizeTracker.ofUnlimitedBytes());
             
             if (!nbt.contains("Metadata") || !nbt.contains("Regions")) {
                 throw new IOException("Archivo litematic inválido");
             }
             
-            NbtCompound metadata = nbt.getCompound("Metadata");
-            String name = metadata.getString("Name");
+            NbtCompound metadata = nbt.getCompound("Metadata").orElse(new NbtCompound());
+            String name = metadata.getString("Name").orElse(file.getName());
             
             LoadedSchematic schematic = new LoadedSchematic(name.isEmpty() ? file.getName() : name);
             
             // Leer regiones
-            NbtCompound regions = nbt.getCompound("Regions");
+            NbtCompound regions = nbt.getCompound("Regions").orElse(new NbtCompound());
             
             for (String regionName : regions.getKeys()) {
-                NbtCompound region = regions.getCompound(regionName);
+                NbtCompound region = regions.getCompound(regionName).orElse(new NbtCompound());
                 loadLitematicRegion(schematic, region);
             }
             
@@ -86,37 +87,41 @@ public class SchematicLoader {
         }
         
         // Leer tamaño
-        NbtCompound sizeNbt = region.getCompound("Size");
+        NbtCompound sizeNbt = region.getCompound("Size").orElse(new NbtCompound());
         Vec3i size = new Vec3i(
-            sizeNbt.getInt("x"),
-            sizeNbt.getInt("y"),
-            sizeNbt.getInt("z")
+            sizeNbt.getInt("x").orElse(0),
+            sizeNbt.getInt("y").orElse(0),
+            sizeNbt.getInt("z").orElse(0)
         );
         schematic.setSize(size);
         
         // Leer posición
         if (region.contains("Position")) {
-            NbtCompound posNbt = region.getCompound("Position");
+            NbtCompound posNbt = region.getCompound("Position").orElse(new NbtCompound());
             BlockPos origin = new BlockPos(
-                posNbt.getInt("x"),
-                posNbt.getInt("y"),
-                posNbt.getInt("z")
+                posNbt.getInt("x").orElse(0),
+                posNbt.getInt("y").orElse(0),
+                posNbt.getInt("z").orElse(0)
             );
             schematic.setOrigin(origin);
         }
         
         // Leer paleta de bloques
-        NbtCompound palette = region.getCompound("BlockStatePalette");
+        NbtCompound palette = region.getCompound("BlockStatePalette").orElse(new NbtCompound());
         String[] paletteArray = new String[palette.getSize()];
         
         for (String key : palette.getKeys()) {
-            int index = Integer.parseInt(key);
-            NbtCompound blockState = palette.getCompound(key);
-            paletteArray[index] = blockState.getString("Name");
+            try {
+                int index = Integer.parseInt(key);
+                NbtCompound blockState = palette.getCompound(key).orElse(new NbtCompound());
+                paletteArray[index] = blockState.getString("Name").orElse("minecraft:air");
+            } catch (NumberFormatException e) {
+                // Ignorar claves inválidas
+            }
         }
         
         // Leer estados de bloques
-        long[] blockStates = region.getLongArray("BlockStates");
+        long[] blockStates = region.getLongArray("BlockStates").orElse(new long[0]);
         int bitsPerBlock = Math.max(2, Integer.SIZE - Integer.numberOfLeadingZeros(paletteArray.length - 1));
         
         int index = 0;
@@ -142,10 +147,10 @@ public class SchematicLoader {
      */
     private LoadedSchematic loadSpongeSchematic(File file) throws IOException {
         try (FileInputStream fis = new FileInputStream(file)) {
-            NbtCompound nbt = NbtIo.readCompressed(fis);
+            NbtCompound nbt = NbtIo.readCompressed(fis, NbtSizeTracker.ofUnlimitedBytes());
             
             // Verificar versión
-            int version = nbt.getInt("Version");
+            int version = nbt.getInt("Version").orElse(0);
             if (version < 1 || version > 3) {
                 throw new IOException("Versión de Sponge Schematic no soportada: " + version);
             }
@@ -154,30 +159,32 @@ public class SchematicLoader {
             LoadedSchematic schematic = new LoadedSchematic(name);
             
             // Leer dimensiones
-            short width = nbt.getShort("Width");
-            short height = nbt.getShort("Height");
-            short length = nbt.getShort("Length");
+            short width = nbt.getShort("Width").orElse((short)0);
+            short height = nbt.getShort("Height").orElse((short)0);
+            short length = nbt.getShort("Length").orElse((short)0);
             schematic.setSize(new Vec3i(width, height, length));
             
             // Leer offset si existe
             if (nbt.contains("Offset")) {
-                int[] offset = nbt.getIntArray("Offset");
+                int[] offset = nbt.getIntArray("Offset").orElse(new int[0]);
                 if (offset.length == 3) {
                     schematic.setOrigin(new BlockPos(offset[0], offset[1], offset[2]));
                 }
             }
             
             // Leer paleta
-            NbtCompound palette = nbt.getCompound("Palette");
+            NbtCompound palette = nbt.getCompound("Palette").orElse(new NbtCompound());
             String[] paletteArray = new String[palette.getSize()];
             
             for (String key : palette.getKeys()) {
-                int index = palette.getInt(key);
-                paletteArray[index] = key;
+                int index = palette.getInt(key).orElse(0);
+                if (index < paletteArray.length) {
+                    paletteArray[index] = key;
+                }
             }
             
             // Leer datos de bloques
-            byte[] blockData = nbt.getByteArray("BlockData");
+            byte[] blockData = nbt.getByteArray("BlockData").orElse(new byte[0]);
             
             int index = 0;
             for (int y = 0; y < height; y++) {
@@ -211,20 +218,20 @@ public class SchematicLoader {
      */
     private LoadedSchematic loadWorldEditSchematic(File file) throws IOException {
         try (FileInputStream fis = new FileInputStream(file)) {
-            NbtCompound nbt = NbtIo.readCompressed(fis);
+            NbtCompound nbt = NbtIo.readCompressed(fis, NbtSizeTracker.ofUnlimitedBytes());
             
             String name = file.getName().replace(".schematic", "");
             LoadedSchematic schematic = new LoadedSchematic(name);
             
             // Leer dimensiones
-            short width = nbt.getShort("Width");
-            short height = nbt.getShort("Height");
-            short length = nbt.getShort("Length");
+            short width = nbt.getShort("Width").orElse((short)0);
+            short height = nbt.getShort("Height").orElse((short)0);
+            short length = nbt.getShort("Length").orElse((short)0);
             schematic.setSize(new Vec3i(width, height, length));
             
             // Leer datos de bloques (formato legacy)
-            byte[] blocks = nbt.getByteArray("Blocks");
-            byte[] data = nbt.getByteArray("Data");
+            byte[] blocks = nbt.getByteArray("Blocks").orElse(new byte[0]);
+            byte[] data = nbt.getByteArray("Data").orElse(new byte[0]);
             
             int index = 0;
             for (int y = 0; y < height; y++) {
@@ -260,6 +267,8 @@ public class SchematicLoader {
      * Extrae el ID de paleta de un array de longs
      */
     private int extractPaletteId(long[] data, int index, int bitsPerBlock) {
+        if (data.length == 0) return 0;
+        
         int longIndex = (index * bitsPerBlock) / 64;
         int startBit = (index * bitsPerBlock) % 64;
         
@@ -281,14 +290,12 @@ public class SchematicLoader {
      */
     private String convertLegacyBlockId(int id, int data) {
         // Conversión básica de IDs legacy a nombres modernos
-        // Esta es una conversión simplificada, se debería expandir para todos los bloques
         return switch (id) {
             case 1 -> "minecraft:stone";
             case 2 -> "minecraft:grass_block";
             case 3 -> "minecraft:dirt";
             case 4 -> "minecraft:cobblestone";
             case 5 -> "minecraft:oak_planks";
-            // ... agregar más conversiones según sea necesario
             default -> "minecraft:stone";
         };
     }

@@ -1,4 +1,4 @@
-package com.neokey.neomatica.render;
+﻿package com.neokey.neomatica.render;
 
 import com.neokey.neomatica.Neomatica;
 import com.neokey.neomatica.schematic.LayerGuide;
@@ -88,7 +88,7 @@ public class LayerRenderer {
         }
         
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.begin();
         
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         
@@ -121,10 +121,10 @@ public class LayerRenderer {
         float a = color[3] * layerOpacity;
         
         // Solo renderizar cara superior para la guía
-        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a);
     }
     
     /**
@@ -135,7 +135,6 @@ public class LayerRenderer {
         BlockPos placement = schematic.getPlacement();
         
         int currentLayer = layerGuide.getCurrentLayer();
-        int totalLayers = layerGuide.getTotalLayers();
         
         // Calcular posición del indicador
         int indicatorY = switch (layerGuide.getAxis()) {
@@ -155,7 +154,7 @@ public class LayerRenderer {
         Matrix4f matrix = matrices.peek().getPositionMatrix();
         
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.begin();
         
         buffer.begin(VertexFormat.DrawMode.DEBUG_LINES, VertexFormats.POSITION_COLOR);
         
@@ -183,8 +182,8 @@ public class LayerRenderer {
                         float x1, float y1, float z1,
                         float x2, float y2, float z2,
                         float[] color) {
-        buffer.vertex(matrix, x1, y1, z1).color(color[0], color[1], color[2], color[3]).next();
-        buffer.vertex(matrix, x2, y2, z2).color(color[0], color[1], color[2], color[3]).next();
+        buffer.vertex(matrix, x1, y1, z1).color(color[0], color[1], color[2], color[3]);
+        buffer.vertex(matrix, x2, y2, z2).color(color[0], color[1], color[2], color[3]);
     }
     
     /**
@@ -231,7 +230,7 @@ public class LayerRenderer {
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.lineWidth(2.0f);
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
     }
     
     /**

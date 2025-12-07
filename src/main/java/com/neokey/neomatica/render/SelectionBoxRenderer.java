@@ -1,7 +1,6 @@
-package com.neokey.neomatica.render;
+﻿package com.neokey.neomatica.render;
 
 import com.neokey.neomatica.Neomatica;
-import com.neokey.neomatica.client.NeomaticaClient;
 import com.neokey.neomatica.tools.ToolManager;
 
 import net.minecraft.client.MinecraftClient;
@@ -9,6 +8,7 @@ import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 import org.joml.Matrix4f;
 
@@ -41,7 +41,10 @@ public class SelectionBoxRenderer {
         }
         
         try {
-            ToolManager toolManager = NeomaticaClient.getInstance().getToolManager();
+            // Obtener el ToolManager desde el cliente
+            // Nota: Esto requiere que guardes una referencia al ToolManager en algún lugar accesible
+            // Por ahora, usaremos null check
+            ToolManager toolManager = getToolManager();
             
             if (toolManager == null) {
                 return;
@@ -60,7 +63,7 @@ public class SelectionBoxRenderer {
             setupRenderState();
             
             Tessellator tessellator = Tessellator.getInstance();
-            BufferBuilder buffer = tessellator.getBuffer();
+            BufferBuilder buffer = tessellator.begin();
             
             // Renderizar posición 1
             if (pos1 != null) {
@@ -85,6 +88,16 @@ public class SelectionBoxRenderer {
         } catch (Exception e) {
             Neomatica.LOGGER.error("Error al renderizar caja de selección", e);
         }
+    }
+    
+    /**
+     * Obtiene el ToolManager - debe ser implementado según tu arquitectura
+     */
+    private ToolManager getToolManager() {
+        // Esta es una implementación temporal
+        // Necesitarás almacenar el ToolManager en un lugar accesible
+        // Por ejemplo, en una clase singleton o en el cliente
+        return null; // TODO: Implementar acceso al ToolManager
     }
     
     /**
@@ -195,40 +208,40 @@ public class SelectionBoxRenderer {
         float r = color[0], g = color[1], b = color[2], a = color[3];
         
         // Cara inferior (Y-)
-        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a);
         
         // Cara superior (Y+)
-        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a);
         
         // Cara norte (Z-)
-        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, a);
         
         // Cara sur (Z+)
-        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a);
         
         // Cara oeste (X-)
-        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a);
         
         // Cara este (X+)
-        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a).next();
+        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a);
     }
     
     /**
@@ -267,8 +280,8 @@ public class SelectionBoxRenderer {
                         float x1, float y1, float z1,
                         float x2, float y2, float z2,
                         float[] color) {
-        buffer.vertex(matrix, x1, y1, z1).color(color[0], color[1], color[2], color[3]).next();
-        buffer.vertex(matrix, x2, y2, z2).color(color[0], color[1], color[2], color[3]).next();
+        buffer.vertex(matrix, x1, y1, z1).color(color[0], color[1], color[2], color[3]);
+        buffer.vertex(matrix, x2, y2, z2).color(color[0], color[1], color[2], color[3]);
     }
     
     /**
@@ -280,7 +293,7 @@ public class SelectionBoxRenderer {
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.lineWidth(lineWidth);
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
     }
     
     /**

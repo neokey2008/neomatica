@@ -121,45 +121,42 @@ public class KeyBindings {
             client.setScreen(new ToolsScreen(client.currentScreen));
         }
         
+        // Obtener ToolManager del cliente
+        ToolManager toolManager = NeomaticaClient.getInstance().getToolManager();
+        if (toolManager == null) return;
+        
         // Seleccionar posición 1
         if (selectPos1Key.wasPressed()) {
-            ToolManager toolManager = NeomaticaClient.getInstance().getToolManager();
             toolManager.setPosition1();
         }
         
         // Seleccionar posición 2
         if (selectPos2Key.wasPressed()) {
-            ToolManager toolManager = NeomaticaClient.getInstance().getToolManager();
             toolManager.setPosition2();
         }
         
         // Copiar área
         if (copyKey.wasPressed()) {
-            ToolManager toolManager = NeomaticaClient.getInstance().getToolManager();
             toolManager.copyArea();
         }
         
         // Pegar schematic
         if (pasteKey.wasPressed()) {
-            ToolManager toolManager = NeomaticaClient.getInstance().getToolManager();
             toolManager.pasteSchematic();
         }
         
         // Alternar visibilidad
         if (toggleVisibilityKey.wasPressed()) {
-            ToolManager toolManager = NeomaticaClient.getInstance().getToolManager();
             toolManager.toggleVisibility();
         }
         
         // Rotar en sentido horario
         if (rotateClockwiseKey.wasPressed()) {
-            ToolManager toolManager = NeomaticaClient.getInstance().getToolManager();
             toolManager.rotateSchematicClockwise();
         }
         
         // Rotar en sentido antihorario
         if (rotateCounterKey.wasPressed()) {
-            ToolManager toolManager = NeomaticaClient.getInstance().getToolManager();
             toolManager.rotateSchematicCounterClockwise();
         }
     }

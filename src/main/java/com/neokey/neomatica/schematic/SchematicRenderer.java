@@ -1,4 +1,4 @@
-package com.neokey.neomatica.schematic;
+﻿package com.neokey.neomatica.schematic;
 
 import com.neokey.neomatica.Neomatica;
 import com.neokey.neomatica.schematic.SchematicManager.LoadedSchematic;
@@ -74,7 +74,7 @@ public class SchematicRenderer {
         Map<BlockPos, SchematicBlock> blocks = schematic.getBlocks();
         
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.begin();
         
         // Configurar renderizado
         setupRenderState();
@@ -146,40 +146,40 @@ public class SchematicRenderer {
         z2 -= offset;
         
         // Cara inferior (Y-)
-        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a);
         
         // Cara superior (Y+)
-        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a);
         
         // Cara norte (Z-)
-        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, a);
         
         // Cara sur (Z+)
-        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a);
         
         // Cara oeste (X-)
-        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a);
         
         // Cara este (X+)
-        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a).next();
+        buffer.vertex(matrix, x2, y1, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a);
     }
     
     /**
@@ -190,7 +190,7 @@ public class SchematicRenderer {
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
     }
     
     /**

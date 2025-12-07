@@ -1,4 +1,4 @@
-package com.neokey.neomatica.render;
+﻿package com.neokey.neomatica.render;
 
 import com.neokey.neomatica.Neomatica;
 import com.neokey.neomatica.schematic.SchematicManager;
@@ -8,6 +8,7 @@ import com.neokey.neomatica.schematic.SchematicRenderer;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
+import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderContext;
 
 /**
  * Renderizador de schematics en el mundo
@@ -37,7 +38,7 @@ public class SchematicWorldRenderer {
         
         try {
             MatrixStack matrices = context.matrixStack();
-            float tickDelta = context.tickDelta();
+            float tickDelta = context.tickCounter().getLastFrameDuration();
             
             // Configurar estado de renderizado
             setupRenderState();
@@ -73,7 +74,7 @@ public class SchematicWorldRenderer {
         RenderSystem.defaultBlendFunc();
         RenderSystem.enableDepthTest();
         RenderSystem.depthMask(true);
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
     }
     
     /**

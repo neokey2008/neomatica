@@ -1,6 +1,5 @@
 package com.neokey.neomatica.gui;
 
-import com.neokey.neomatica.client.NeomaticaClient;
 import com.neokey.neomatica.tools.ToolManager;
 import com.neokey.neomatica.tools.ToolManager.Tool;
 
@@ -31,7 +30,11 @@ public class ToolsScreen extends Screen {
     protected void init() {
         super.init();
         
-        toolManager = NeomaticaClient.getInstance().getToolManager();
+        // Obtener toolManager - necesitarás implementar un sistema de acceso global
+        // Por ahora, lo inicializamos nuevo (no ideal pero funcionará temporalmente)
+        if (toolManager == null) {
+            toolManager = new ToolManager();
+        }
         
         int centerX = this.width / 2;
         int startY = 60;

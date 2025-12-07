@@ -1,4 +1,4 @@
-package com.neokey.neomatica.render;
+﻿package com.neokey.neomatica.render;
 
 import com.neokey.neomatica.schematic.SchematicManager.LoadedSchematic;
 import com.neokey.neomatica.schematic.SchematicManager.SchematicBlock;
@@ -86,7 +86,7 @@ public class Preview3DRenderer {
      */
     private void renderBlocks(LoadedSchematic schematic, MatrixStack matrices) {
         Tessellator tessellator = Tessellator.getInstance();
-        BufferBuilder buffer = tessellator.getBuffer();
+        BufferBuilder buffer = tessellator.begin();
         
         buffer.begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
         
@@ -125,48 +125,48 @@ public class Preview3DRenderer {
         float topG = Math.min(g * 1.2f, 1.0f);
         float topB = Math.min(b * 1.2f, 1.0f);
         
-        buffer.vertex(matrix, x1, y2, z1).color(topR, topG, topB, a).next();
-        buffer.vertex(matrix, x1, y2, z2).color(topR, topG, topB, a).next();
-        buffer.vertex(matrix, x2, y2, z2).color(topR, topG, topB, a).next();
-        buffer.vertex(matrix, x2, y2, z1).color(topR, topG, topB, a).next();
+        buffer.vertex(matrix, x1, y2, z1).color(topR, topG, topB, a);
+        buffer.vertex(matrix, x1, y2, z2).color(topR, topG, topB, a);
+        buffer.vertex(matrix, x2, y2, z2).color(topR, topG, topB, a);
+        buffer.vertex(matrix, x2, y2, z1).color(topR, topG, topB, a);
         
         // Cara frontal (Z+) - normal
-        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y1, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x2, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a);
         
         // Cara derecha (X+) - más oscura
         float sideR = r * 0.8f;
         float sideG = g * 0.8f;
         float sideB = b * 0.8f;
         
-        buffer.vertex(matrix, x2, y1, z2).color(sideR, sideG, sideB, a).next();
-        buffer.vertex(matrix, x2, y1, z1).color(sideR, sideG, sideB, a).next();
-        buffer.vertex(matrix, x2, y2, z1).color(sideR, sideG, sideB, a).next();
-        buffer.vertex(matrix, x2, y2, z2).color(sideR, sideG, sideB, a).next();
+        buffer.vertex(matrix, x2, y1, z2).color(sideR, sideG, sideB, a);
+        buffer.vertex(matrix, x2, y1, z1).color(sideR, sideG, sideB, a);
+        buffer.vertex(matrix, x2, y2, z1).color(sideR, sideG, sideB, a);
+        buffer.vertex(matrix, x2, y2, z2).color(sideR, sideG, sideB, a);
         
         // Cara trasera (Z-) - más oscura
-        buffer.vertex(matrix, x2, y1, z1).color(sideR, sideG, sideB, a).next();
-        buffer.vertex(matrix, x1, y1, z1).color(sideR, sideG, sideB, a).next();
-        buffer.vertex(matrix, x1, y2, z1).color(sideR, sideG, sideB, a).next();
-        buffer.vertex(matrix, x2, y2, z1).color(sideR, sideG, sideB, a).next();
+        buffer.vertex(matrix, x2, y1, z1).color(sideR, sideG, sideB, a);
+        buffer.vertex(matrix, x1, y1, z1).color(sideR, sideG, sideB, a);
+        buffer.vertex(matrix, x1, y2, z1).color(sideR, sideG, sideB, a);
+        buffer.vertex(matrix, x2, y2, z1).color(sideR, sideG, sideB, a);
         
         // Cara izquierda (X-) - normal
-        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a).next();
-        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a).next();
+        buffer.vertex(matrix, x1, y1, z1).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y1, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z2).color(r, g, b, a);
+        buffer.vertex(matrix, x1, y2, z1).color(r, g, b, a);
         
         // Cara inferior (Y-) - más oscura
         float bottomR = r * 0.6f;
         float bottomG = g * 0.6f;
         float bottomB = b * 0.6f;
         
-        buffer.vertex(matrix, x1, y1, z1).color(bottomR, bottomG, bottomB, a).next();
-        buffer.vertex(matrix, x2, y1, z1).color(bottomR, bottomG, bottomB, a).next();
-        buffer.vertex(matrix, x2, y1, z2).color(bottomR, bottomG, bottomB, a).next();
-        buffer.vertex(matrix, x1, y1, z2).color(bottomR, bottomG, bottomB, a).next();
+        buffer.vertex(matrix, x1, y1, z1).color(bottomR, bottomG, bottomB, a);
+        buffer.vertex(matrix, x2, y1, z1).color(bottomR, bottomG, bottomB, a);
+        buffer.vertex(matrix, x2, y1, z2).color(bottomR, bottomG, bottomB, a);
+        buffer.vertex(matrix, x1, y1, z2).color(bottomR, bottomG, bottomB, a);
     }
     
     /**
@@ -225,7 +225,7 @@ public class Preview3DRenderer {
         RenderSystem.defaultBlendFunc();
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
+        RenderSystem.setShader(GameRenderer::getPositionColorShader);
     }
     
     /**
