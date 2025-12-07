@@ -3,7 +3,7 @@
 **Gestión avanzada de schematics para Minecraft 1.21.8 (Fabric)**
 
 ![Minecraft](https://img.shields.io/badge/Minecraft-1.21.8-green.svg)
-![Fabric](https://img.shields.io/badge/Fabric-0.16.5-orange.svg)
+![Fabric](https://img.shields.io/badge/Fabric-0.16.9-orange.svg)
 ![License](https://img.shields.io/badge/License-MIT-blue.svg)
 
 ## 🎯 Características

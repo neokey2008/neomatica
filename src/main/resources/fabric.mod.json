@@ -18,6 +18,9 @@
   "environment": "client",
   
   "entrypoints": {
+    "main": [
+      "com.neokey.neomatica.Neomatica"
+    ],
     "client": [
       "com.neokey.neomatica.client.NeomaticaClient"
     ],

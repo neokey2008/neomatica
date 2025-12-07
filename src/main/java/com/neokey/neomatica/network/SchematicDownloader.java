@@ -7,6 +7,8 @@ import java.net.HttpURLConnection;
 import java.net.URL;
 import java.util.concurrent.*;
 import java.util.function.Consumer;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * Gestor de descargas de schematics

@@ -1,5 +1,5 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'fabric-loom' version '1.10-SNAPSHOT'
 	id 'maven-publish'
 	id 'java'
 }
@@ -39,10 +39,10 @@ dependencies {
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
 	
 	// Litematica (opcional, para compatibilidad)
-	modCompileOnly "fi.dy.masa.litematica:litematica-fabric:${project.litematica_version}"
+	// modCompileOnly "fi.dy.masa.litematica:litematica-fabric:${project.minecraft_version}-${project.litematica_version}"
 	
 	// MaLiLib (opcional, para GUI)
-	modCompileOnly "fi.dy.masa.malilib:malilib-fabric:${project.malilib_version}"
+	// modCompileOnly "fi.dy.masa.malilib:malilib-fabric:${project.minecraft_version}-${project.malilib_version}"
 	
 	// Mod Menu (integración)
 	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
