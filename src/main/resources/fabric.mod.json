@@ -1,0 +1,66 @@
+{
+  "schemaVersion": 1,
+  "id": "neomatica",
+  "version": "${version}",
+  "name": "Neomatica",
+  "description": "Gestión avanzada de schematics con búsqueda online, preview 3D y herramientas completas. Compatible con Litematica.",
+  "authors": [
+    "NEOKEY"
+  ],
+  "contributors": [],
+  "contact": {
+    "homepage": "https://github.com/neokey/neomatica",
+    "sources": "https://github.com/neokey/neomatica",
+    "issues": "https://github.com/neokey/neomatica/issues"
+  },
+  "license": "MIT",
+  "icon": "assets/neomatica/icon.png",
+  "environment": "client",
+  
+  "entrypoints": {
+    "client": [
+      "com.neokey.neomatica.client.NeomaticaClient"
+    ],
+    "modmenu": [
+      "com.neokey.neomatica.integration.ModMenuIntegration"
+    ]
+  },
+  
+  "mixins": [
+    "neomatica.mixins.json"
+  ],
+  
+  "depends": {
+    "fabricloader": ">=0.16.0",
+    "fabric-api": "*",
+    "minecraft": "~1.21.8",
+    "java": ">=21"
+  },
+  
+  "suggests": {
+    "litematica": "*",
+    "malilib": "*",
+    "modmenu": "*"
+  },
+  
+  "breaks": {},
+  "conflicts": {},
+  
+  "custom": {
+    "modmenu": {
+      "badges": ["client"],
+      "links": {
+        "modmenu.discord": "https://discord.gg/neomatica",
+        "modmenu.github": "https://github.com/neokey/neomatica"
+      },
+      "parent": {
+        "id": "fabric-api",
+        "name": "Fabric API",
+        "badges": ["library"]
+      }
+    },
+    "loom:injected_interfaces": {
+      "net/minecraft/class_310": ["com/neokey/neomatica/mixins/MinecraftClientMixin"]
+    }
+  }
+}

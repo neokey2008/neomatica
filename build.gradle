@@ -1,0 +1,135 @@
+plugins {
+	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'maven-publish'
+	id 'java'
+}
+
+version = project.mod_version
+group = project.maven_group
+
+base {
+	archivesName = project.archives_base_name
+}
+
+repositories {
+	mavenCentral()
+	maven {
+		name = "Fabric"
+		url = "https://maven.fabricmc.net/"
+	}
+	maven {
+		name = "Masa's Maven"
+		url = "https://masa.dy.fi/maven"
+	}
+	maven {
+		name = "TerraformersMC"
+		url = "https://maven.terraformersmc.com/releases"
+	}
+	maven {
+		name = "Modrinth"
+		url = "https://api.modrinth.com/maven"
+	}
+}
+
+dependencies {
+	// Minecraft y Fabric
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
+	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+	
+	// Litematica (opcional, para compatibilidad)
+	modCompileOnly "fi.dy.masa.litematica:litematica-fabric:${project.litematica_version}"
+	
+	// MaLiLib (opcional, para GUI)
+	modCompileOnly "fi.dy.masa.malilib:malilib-fabric:${project.malilib_version}"
+	
+	// Mod Menu (integración)
+	modImplementation "com.terraformersmc:modmenu:${project.modmenu_version}"
+	
+	// Gson para JSON
+	implementation "com.google.code.gson:gson:2.10.1"
+}
+
+processResources {
+	inputs.property "version", project.version
+	inputs.property "minecraft_version", project.minecraft_version
+	inputs.property "loader_version", project.loader_version
+	inputs.property "fabric_version", project.fabric_version
+
+	filesMatching("fabric.mod.json") {
+		expand(
+			"version": project.version,
+			"minecraft_version": project.minecraft_version,
+			"loader_version": project.loader_version,
+			"fabric_version": project.fabric_version
+		)
+	}
+}
+
+tasks.withType(JavaCompile).configureEach {
+	it.options.encoding = "UTF-8"
+	it.options.release = 21
+}
+
+java {
+	withSourcesJar()
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
+}
+
+jar {
+	from("LICENSE") {
+		rename { "${it}_${project.base.archivesName.get()}"}
+	}
+	
+	manifest {
+		attributes([
+			"Implementation-Title": project.name,
+			"Implementation-Version": project.version,
+			"Implementation-Vendor": "NEOKEY"
+		])
+	}
+}
+
+// Tarea para construir y copiar el JAR a la carpeta de mods
+task buildAndCopy(type: Copy) {
+	dependsOn build
+	from jar.archiveFile
+	into file("run/mods")
+}
+
+publishing {
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+			
+			pom {
+				name = project.archives_base_name
+				description = "Gestión avanzada de schematics con búsqueda online y preview 3D"
+			}
+		}
+	}
+
+	repositories {
+		// Aquí puedes agregar tu repositorio Maven si lo tienes
+	}
+}
+
+// Configuración adicional para desarrollo
+loom {
+	runs {
+		client {
+			client()
+			configName = "Fabric Client"
+			ideConfigGenerated = true
+			runDir = "run"
+		}
+		server {
+			server()
+			configName = "Fabric Server"
+			ideConfigGenerated = true
+			runDir = "run"
+		}
+	}
+}

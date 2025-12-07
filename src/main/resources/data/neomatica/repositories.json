@@ -1,0 +1,47 @@
+{
+  "repositories": [
+    {
+      "name": "GrabCraft",
+      "url": "https://www.grabcraft.com",
+      "api_endpoint": "/api/schematics",
+      "enabled": true,
+      "supports_search": true,
+      "supports_categories": true,
+      "format": "litematic"
+    },
+    {
+      "name": "Minecraft Schematics",
+      "url": "https://www.minecraft-schematics.com",
+      "api_endpoint": "/api/v1/schematics",
+      "enabled": true,
+      "supports_search": true,
+      "supports_categories": true,
+      "format": "schematic"
+    },
+    {
+      "name": "Planet Minecraft",
+      "url": "https://www.planetminecraft.com",
+      "api_endpoint": "/api/schematics",
+      "enabled": true,
+      "supports_search": true,
+      "supports_categories": true,
+      "format": "multiple"
+    }
+  ],
+  "categories": [
+    "all",
+    "buildings",
+    "redstone",
+    "organic",
+    "decoration",
+    "pixel_art",
+    "statues",
+    "vehicles",
+    "farms",
+    "medieval",
+    "modern",
+    "fantasy"
+  ],
+  "cache_duration": 3600,
+  "max_preview_size": 10000000
+}

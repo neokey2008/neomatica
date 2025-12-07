@@ -1,0 +1,38 @@
+pluginManagement {
+    repositories {
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+        mavenCentral()
+        gradlePluginPortal()
+    }
+    
+    // Para asegurar compatibilidad con Loom 1.14
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == 'fabric-loom') {
+                useModule("net.fabricmc:fabric-loom:${requested.version}")
+            }
+        }
+    }
+}
+
+dependencyResolutionManagement {
+    repositories {
+        mavenCentral()
+        maven {
+            name = 'Fabric'
+            url = 'https://maven.fabricmc.net/'
+        }
+    }
+    
+    // Para Gradle 9.2.0
+    versionCatalogs {
+        libs {
+            // Define tus catálogos aquí si quieres
+        }
+    }
+}
+
+rootProject.name = 'neomatica'
